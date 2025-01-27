@@ -18,9 +18,11 @@ import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBPanelWithEmptyText;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
+import logger.InteractionLogger;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.HashMap;
 
 public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
     private static MySimpleToolWindowPanel instance;
@@ -36,6 +38,7 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
     private String originalCode;
     private String originalSummary;
     private Document codeDocument;
+    private String filePath;
     private TextRange selectedRange;
 
     private MySimpleToolWindowPanel(boolean vertical, Project project) {
@@ -144,12 +147,20 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
         GAM = !GAM;
         initializeActionToolbar();
         refresh();
+        InteractionLogger.log(new HashMap<>() {{
+            put("event", "toggle_state");
+            put("project_path", project.getBasePath());
+            put("new_state", GAM ? "GAM" : "Baseline");
+        }});
     }
 
     public void refresh() {
         setOriginalSummary("");
         getTextPane().setText("");
-        getDiffTextPane().setText("Please exit the diff view to view the retrieved summary.");
+        getDiffTextPane().setText("");
+        if (getDiffTextPane().isVisible()) {
+            getCardLayout().next(getCardPanel());
+        }
         WriteCommandAction.runWriteCommandAction(project, () -> codeDocument.setText(""));
     }
 
@@ -203,6 +214,14 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
 
     public boolean isGAM() {
         return GAM;
+    }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
     }
 
 }

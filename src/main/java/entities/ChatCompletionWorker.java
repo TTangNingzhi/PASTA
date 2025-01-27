@@ -4,8 +4,10 @@ import chat.ChatCompletion;
 import chat.ChatRequest;
 import chat.OpenAIHttpPost;
 import com.intellij.openapi.command.WriteCommandAction;
+import logger.InteractionLogger;
 
 import javax.swing.*;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 
 public class ChatCompletionWorker extends SwingWorker<ChatCompletion, Void> {
@@ -45,14 +47,32 @@ public class ChatCompletionWorker extends SwingWorker<ChatCompletion, Void> {
                 String summary = chatCompletion.choices.get(0).message.content;
                 base.setOriginalSummary(summary);
                 base.getTextPane().setText(summary);
+                InteractionLogger.log(new HashMap<>() {{
+                    put("event", "retrieve_summary");
+                    put("file_path", base.getFilePath());
+                    put("selected_code", base.getOriginalCode());
+                    put("summary", summary);
+                }});
             }
             case "gam", "base" -> {
                 String modifiedCode = chatCompletion.choices.get(0).message.content;
+                String trimmedCode = modifiedCode.replace("```", "").trim();
                 WriteCommandAction.runWriteCommandAction(base.getProject(), () -> {
-                    base.getCodeDocument().setText(modifiedCode
-                            .replace("```\n", "")
-                            .replace("\n```", ""));
+                    base.getCodeDocument().setText(trimmedCode);
                 });
+                InteractionLogger.log(new HashMap<>() {{
+                    if (id.equals("gam")) {
+                        put("event", "commit_gam");
+                        put("original_summary", base.getOriginalSummary());
+                        put("revised_summary", base.getTextPane().getText());
+                    } else {
+                        put("event", "commit_base");
+                        put("prompt", base.getTextPane().getText());
+                    }
+                    put("file_path", base.getFilePath());
+                    put("selected_code", base.getOriginalCode());
+                    put("modified_code", trimmedCode);
+                }});
             }
             default -> throw new RuntimeException("Invalid id for ChatCompletionWorker: " + id);
         }

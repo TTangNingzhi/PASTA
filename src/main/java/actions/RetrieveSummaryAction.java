@@ -40,6 +40,7 @@ public class RetrieveSummaryAction extends BaseAction {
         TextRange selectedRange = new TextRange(editor.getSelectionModel().getSelectionStart(), editor.getSelectionModel().getSelectionEnd());
         getBase().setOriginalCode(selectedCode);
         getBase().setSelectedRange(selectedRange);
+        getBase().setFilePath(editor.getVirtualFile().getPath());
 
         ChatRequest chatRequest = OpenAIRequestTemplates.createSummaryRequest(selectedCode, fileContext);
         try {

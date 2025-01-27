@@ -2,6 +2,7 @@ package actions;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.util.NlsActions;
+import logger.InteractionLogger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import com.github.difflib.DiffUtils;
@@ -9,6 +10,7 @@ import com.github.difflib.patch.AbstractDelta;
 import com.github.difflib.patch.Patch;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import javax.swing.*;
 
@@ -20,9 +22,23 @@ public class DiffSummariesAction extends BaseAction {
     }
 
     public void actionPerformed(@NotNull AnActionEvent e) {
-        if (getBase().getOriginalSummary().equals("") || getBase().getTextPane().getText().equals("")) return;
-        getBase().getDiffTextPane().setText(getDiffHTML(getBase().getOriginalSummary(), getBase().getTextPane().getText()));
+        if (getBase().getOriginalSummary().equals("")
+                || getBase().getTextPane().getText().equals("")
+                || getBase().getOriginalSummary().equals(getBase().getTextPane().getText())) {
+            return;
+        }
         getBase().getCardLayout().next(getBase().getCardPanel());
+
+        if (getBase().getDiffTextPane().isVisible()) {
+            getBase().getDiffTextPane().setText(getDiffHTML(getBase().getOriginalSummary(), getBase().getTextPane().getText()));
+            InteractionLogger.log(new HashMap<>() {{
+                put("event", "diff_summaries");
+                put("project_path", getBase().getProject().getBasePath());
+                put("selected_code", getBase().getOriginalCode());
+                put("original_summary", getBase().getOriginalSummary());
+                put("revised_summary", getBase().getTextPane().getText());
+            }});
+        }
     }
 
     public static String getDiffHTML(String originalText, String revisedText) {
