@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.util.NlsActions;
+import com.intellij.openapi.util.TextRange;
 import entities.ChatCompletionWorker;
 import entities.OpenAIRequestTemplates;
 import org.jetbrains.annotations.NotNull;
@@ -27,6 +28,10 @@ public class CommitPromptAction extends BaseAction {
         String fileContext = editor.getDocument().getText();
         String selectedCode = editor.getSelectionModel().getSelectedText();
         String prompt = getBase().getTextPane().getText();
+        TextRange selectedRange = new TextRange(editor.getSelectionModel().getSelectionStart(), editor.getSelectionModel().getSelectionEnd());
+        getBase().setOriginalCode(selectedCode);
+        getBase().setSelectedRange(selectedRange);
+        getBase().setFilePath(editor.getVirtualFile().getPath());
         ChatRequest chatRequest = OpenAIRequestTemplates.createBaseModificationRequest(selectedCode, fileContext, prompt);
         try {
             ChatCompletionWorker worker = new ChatCompletionWorker("base", chatRequest, getBase());

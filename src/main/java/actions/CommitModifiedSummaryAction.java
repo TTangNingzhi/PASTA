@@ -27,6 +27,7 @@ public class CommitModifiedSummaryAction extends BaseAction {
         String selectedCode = getBase().getOriginalCode();
         String originalSummary = getBase().getOriginalSummary();
         String modifiedSummary = getBase().getTextPane().getText();
+        getBase().setFilePath(editor.getVirtualFile().getPath());
         ChatRequest chatRequest = OpenAIRequestTemplates.createGAMModificationRequest(selectedCode, fileContext, originalSummary, modifiedSummary);
         try {
             ChatCompletionWorker worker = new ChatCompletionWorker("gam", chatRequest, getBase());
