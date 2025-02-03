@@ -27,7 +27,7 @@ public class OpenAIRequestTemplates {
         return new ChatRequest("gpt-3.5-turbo", messages);
     }
 
-    public static ChatRequest createGAMModificationRequest(String selectedCode, String fileContext, String originalSummary, String modifiedSummary) {
+    public static ChatRequest createProceduralModificationRequest(String selectedCode, String fileContext, String originalSummary, String modifiedSummary) {
         List<Message> messages = new ArrayList<>();
         messages.add(new Message("system", """
                 As a helpful assistant, your task is to revise the selected code snippet to reflect the changes specified in its modified summary.
@@ -59,7 +59,7 @@ public class OpenAIRequestTemplates {
         return new ChatRequest("gpt-3.5-turbo", messages);
     }
 
-    public static ChatRequest createBaseModificationRequest(String selectedCode, String fileContext, String prompt) {
+    public static ChatRequest createDeclarativeModificationRequest(String selectedCode, String fileContext, String prompt) {
         List<Message> messages = new ArrayList<>();
         messages.add(new Message("system", """
                 You are a helpful assistant tasked with modifying the selected code snippet based on the provided prompt.

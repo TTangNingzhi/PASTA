@@ -14,26 +14,25 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.util.TextRange;
 import com.intellij.ui.JBColor;
+import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBPanelWithEmptyText;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import logger.InteractionLogger;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
 
 public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
     private static MySimpleToolWindowPanel instance;
-    private boolean GAM = true;
     private final Project project;
     private DefaultActionGroup actionGroup;
     private ActionToolbar actionToolbar;
     private JBPanelWithEmptyText contentPanel;
     private CardLayout cardLayout;
     private JBPanel<?> cardPanel;
-    private JTextPane textPane;
+    private JTextPane proceduralTextPane;
+    private JTextPane declarativeTextPane;
     private JTextPane diffTextPane;
     private String originalCode;
     private String originalSummary;
@@ -44,7 +43,6 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
     private MySimpleToolWindowPanel(boolean vertical, Project project) {
         super(vertical);
         this.project = project;
-
         initializeActionToolbar();
         initializeContent();
     }
@@ -70,29 +68,26 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
 
         RetrieveSummaryAction retrieveSummaryAction = new RetrieveSummaryAction("Retrieve Summary", "Retrieve summary", AllIcons.Actions.Find);
         DiffSummariesAction diffSummariesAction = new DiffSummariesAction("Diff Summaries", "Diff summaries", AllIcons.Actions.Diff);
-        CommitModifiedSummaryAction commitModifiedSummaryAction = new CommitModifiedSummaryAction("Commit Modified Summary", "Commit modified summary", AllIcons.Actions.Edit);
-        CommitPromptAction commitPromptAction = new CommitPromptAction("Commit Prompt", "Commit prompt", AllIcons.Actions.Edit);
+        CommitProceduralPromptAction commitProceduralPromptAction = new CommitProceduralPromptAction("Commit Procedural Prompt", "Commit procedural prompt", AllIcons.Actions.Edit);
+        CommitDeclarativePromptAction commitDeclarativePromptAction = new CommitDeclarativePromptAction("Commit Declarative Prompt", "Commit declarative prompt", AllIcons.Actions.Edit);
         AcceptModifiedCodeAction acceptModifiedCodeAction = new AcceptModifiedCodeAction("Accept Modified Code", "Accept modified code", AllIcons.Actions.Checked);
 
         retrieveSummaryAction.setBase(this);
         diffSummariesAction.setBase(this);
-        commitModifiedSummaryAction.setBase(this);
-        commitPromptAction.setBase(this);
+        commitProceduralPromptAction.setBase(this);
+        commitDeclarativePromptAction.setBase(this);
         acceptModifiedCodeAction.setBase(this);
 
-        actionGroup.add(new ModeLabelAction(this));
-        if (GAM) {
-            actionGroup.add(retrieveSummaryAction);
-            actionGroup.add(diffSummariesAction);
-            actionGroup.addSeparator();
-            actionGroup.add(commitModifiedSummaryAction);
-        } else {
-            actionGroup.add(commitPromptAction);
-        }
+        actionGroup.add(retrieveSummaryAction);
+        actionGroup.add(diffSummariesAction);
+        actionGroup.add(commitProceduralPromptAction);
+        actionGroup.addSeparator();
+        actionGroup.add(commitDeclarativePromptAction);
+        actionGroup.addSeparator();
         actionGroup.add(acceptModifiedCodeAction);
 
         if (actionToolbar == null) {
-            actionToolbar = ActionManager.getInstance().createActionToolbar("GAM", actionGroup, true);
+            actionToolbar = ActionManager.getInstance().createActionToolbar("llm-modification", actionGroup, true);
             actionToolbar.setTargetComponent(this);
             setToolbar(actionToolbar.getComponent());
         } else {
@@ -101,7 +96,7 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
     }
 
     private void initializeContent() {
-        contentPanel = new JBPanelWithEmptyText(new BorderLayout());
+        contentPanel = new JBPanelWithEmptyText(new GridLayout(3, 1));
         contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         Content content = ContentFactory.getInstance().createContent(contentPanel, "", false);
         setContent(content.getComponent());
@@ -111,10 +106,10 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
     }
 
     private void createInputArea() {
-        // Setting up the input area with a placeholder
-        textPane = new JTextPane();
-        textPane.setBackground(JBColor.WHITE);
-        textPane.setFont(new Font("Monospaced", Font.PLAIN, 14));
+        // Setting up the procedural text pane
+        proceduralTextPane = new JTextPane();
+        proceduralTextPane.setBackground(JBColor.WHITE);
+        proceduralTextPane.setFont(new Font("Monospaced", Font.PLAIN, 14));
 
         // Setup diff text pane with HTML content
         diffTextPane = new JTextPane();
@@ -125,9 +120,27 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
         // Card layout to toggle between text displays
         cardLayout = new CardLayout();
         cardPanel = new JBPanel<>(cardLayout);
-        cardPanel.add(textPane, "Plain Text");
+        cardPanel.add(proceduralTextPane, "Plain Text");
         cardPanel.add(diffTextPane, "Rich Text");
-        contentPanel.add(cardPanel, BorderLayout.NORTH);
+
+        // Setting up the declarative text pane
+        declarativeTextPane = new JTextPane();
+        declarativeTextPane.setBackground(JBColor.WHITE);
+        declarativeTextPane.setFont(new Font("Monospaced", Font.PLAIN, 14));
+
+        // Setting up the procedural panel
+        JBPanelWithEmptyText proceduralPanel = new JBPanelWithEmptyText(new BorderLayout());
+        proceduralPanel.add(createJBLabelOfFont14("Procedural prompt"), BorderLayout.NORTH);
+        proceduralPanel.add(cardPanel, BorderLayout.CENTER);
+
+        // Setting up the declarative panel
+        JBPanelWithEmptyText declarativePanel = new JBPanelWithEmptyText(new BorderLayout());
+        declarativePanel.add(createJBLabelOfFont14("Declarative prompt"), BorderLayout.NORTH);
+        declarativePanel.add(declarativeTextPane, BorderLayout.CENTER);
+
+        // Add the procedural and declarative panels to the content panel
+        contentPanel.add(proceduralPanel);
+        contentPanel.add(declarativePanel);
     }
 
     private void createCodeEditor() {
@@ -140,23 +153,23 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
         settings.setLineNumbersShown(false);
         settings.setFoldingOutlineShown(false);
         settings.setLineMarkerAreaShown(false);
-        contentPanel.add(codeEditor.getComponent(), BorderLayout.CENTER);
+
+        JBPanelWithEmptyText codePanel = new JBPanelWithEmptyText(new BorderLayout());
+        codePanel.add(createJBLabelOfFont14("Modified code"), BorderLayout.NORTH);
+        codePanel.add(codeEditor.getComponent(), BorderLayout.CENTER);
+        contentPanel.add(codePanel);
     }
 
-    public void toggleGAM() {
-        GAM = !GAM;
-        initializeActionToolbar();
-        refresh();
-        InteractionLogger.log(new HashMap<>() {{
-            put("event", "toggle_state");
-            put("project_path", project.getBasePath());
-            put("new_state", GAM ? "GAM" : "Baseline");
-        }});
+    private JBLabel createJBLabelOfFont14(String text) {
+        JBLabel label = new JBLabel(text);
+        label.setFont(new Font("Arial", Font.PLAIN, 14));
+        label.setBorder(BorderFactory.createEmptyBorder(2, 0, 2, 0));
+        return label;
     }
 
     public void refresh() {
         setOriginalSummary("");
-        getTextPane().setText("");
+        getProceduralTextPane().setText("");
         getDiffTextPane().setText("");
         if (getDiffTextPane().isVisible()) {
             getCardLayout().next(getCardPanel());
@@ -172,8 +185,12 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
         this.originalSummary = originalSummary;
     }
 
-    public JTextPane getTextPane() {
-        return textPane;
+    public JTextPane getProceduralTextPane() {
+        return proceduralTextPane;
+    }
+
+    public JTextPane getDeclarativeTextPane() {
+        return declarativeTextPane;
     }
 
     public JTextPane getDiffTextPane() {
@@ -210,10 +227,6 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
 
     public TextRange getSelectedRange() {
         return selectedRange;
-    }
-
-    public boolean isGAM() {
-        return GAM;
     }
 
     public String getFilePath() {

@@ -23,20 +23,20 @@ public class DiffSummariesAction extends BaseAction {
 
     public void actionPerformed(@NotNull AnActionEvent e) {
         if (getBase().getOriginalSummary().equals("")
-                || getBase().getTextPane().getText().equals("")
-                || getBase().getOriginalSummary().equals(getBase().getTextPane().getText())) {
+                || getBase().getProceduralTextPane().getText().equals("")
+                || getBase().getOriginalSummary().equals(getBase().getProceduralTextPane().getText())) {
             return;
         }
         getBase().getCardLayout().next(getBase().getCardPanel());
 
         if (getBase().getDiffTextPane().isVisible()) {
-            getBase().getDiffTextPane().setText(getDiffHTML(getBase().getOriginalSummary(), getBase().getTextPane().getText()));
+            getBase().getDiffTextPane().setText(getDiffHTML(getBase().getOriginalSummary(), getBase().getProceduralTextPane().getText()));
             InteractionLogger.log(new HashMap<>() {{
                 put("event", "diff_summaries");
                 put("project_path", getBase().getProject().getBasePath());
                 put("selected_code", getBase().getOriginalCode());
                 put("original_summary", getBase().getOriginalSummary());
-                put("revised_summary", getBase().getTextPane().getText());
+                put("revised_summary", getBase().getProceduralTextPane().getText());
             }});
         }
     }

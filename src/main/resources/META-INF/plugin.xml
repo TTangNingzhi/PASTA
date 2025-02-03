@@ -1,11 +1,11 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
-    <id>com.example.GAM-Debugger</id>
+    <id>com.example.LLM-Modification</id>
 
     <!-- Public plugin name should be written in Title Case.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
-    <name>GAM-Debugger</name>
+    <name>LLM-Modification</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
     <vendor email="support@yourcompany.com" url="https://www.yourcompany.com">YourCompany</vendor>
@@ -25,11 +25,6 @@
     <!-- Extension points defined by the plugin.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow id="GAMDebugger" anchor="right" factoryClass="entities.MyToolWindowFactory" secondary="false"/>
+        <toolWindow id="LLMModification" anchor="right" factoryClass="entities.MyToolWindowFactory" secondary="false"/>
     </extensions>
-    <actions>
-        <action id="actions.ToggleGAMAction" class="actions.ToggleGAMAction" text="Toggle GAM">
-            <add-to-group group-id="EditorPopupMenu" anchor="first"/>
-        </action>
-    </actions>
 </idea-plugin>

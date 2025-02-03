@@ -32,7 +32,7 @@ public class RetrieveSummaryAction extends BaseAction {
         String fileContext = editor.getDocument().getText();
         String selectedCode = editor.getSelectionModel().getSelectedText();
         if (selectedCode == null || selectedCode.trim().equals("")) {
-            getBase().getTextPane().setText("Please select some code to summarize.");
+            getBase().getProceduralTextPane().setText("Please select some code to summarize.");
             return;
         }
         TextRange selectedRange = new TextRange(editor.getSelectionModel().getSelectionStart(), editor.getSelectionModel().getSelectionEnd());

@@ -12,10 +12,10 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class CommitModifiedSummaryAction extends BaseAction {
-    public CommitModifiedSummaryAction(@Nullable @NlsActions.ActionText String text,
-                                       @Nullable @NlsActions.ActionDescription String description,
-                                       @Nullable Icon icon) {
+public class CommitProceduralPromptAction extends BaseAction {
+    public CommitProceduralPromptAction(@Nullable @NlsActions.ActionText String text,
+                                        @Nullable @NlsActions.ActionDescription String description,
+                                        @Nullable Icon icon) {
         super(text, description, icon);
     }
 
@@ -26,11 +26,11 @@ public class CommitModifiedSummaryAction extends BaseAction {
         String fileContext = editor.getDocument().getText();
         String selectedCode = getBase().getOriginalCode();
         String originalSummary = getBase().getOriginalSummary();
-        String modifiedSummary = getBase().getTextPane().getText();
+        String modifiedSummary = getBase().getProceduralTextPane().getText();
         getBase().setFilePath(editor.getVirtualFile().getPath());
-        ChatRequest chatRequest = OpenAIRequestTemplates.createGAMModificationRequest(selectedCode, fileContext, originalSummary, modifiedSummary);
+        ChatRequest chatRequest = OpenAIRequestTemplates.createProceduralModificationRequest(selectedCode, fileContext, originalSummary, modifiedSummary);
         try {
-            ChatCompletionWorker worker = new ChatCompletionWorker("gam", chatRequest, getBase());
+            ChatCompletionWorker worker = new ChatCompletionWorker("procedural", chatRequest, getBase());
             worker.execute();
         } catch (Exception ex) {
             throw new RuntimeException(ex);

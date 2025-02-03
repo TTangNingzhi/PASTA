@@ -46,7 +46,7 @@ public class ChatCompletionWorker extends SwingWorker<ChatCompletion, Void> {
             case "summarize" -> {
                 String summary = chatCompletion.choices.get(0).message.content;
                 base.setOriginalSummary(summary);
-                base.getTextPane().setText(summary);
+                base.getProceduralTextPane().setText(summary);
                 InteractionLogger.log(new HashMap<>() {{
                     put("event", "retrieve_summary");
                     put("file_path", base.getFilePath());
@@ -54,20 +54,20 @@ public class ChatCompletionWorker extends SwingWorker<ChatCompletion, Void> {
                     put("summary", summary);
                 }});
             }
-            case "gam", "base" -> {
+            case "procedural", "declarative" -> {
                 String modifiedCode = chatCompletion.choices.get(0).message.content;
                 String trimmedCode = modifiedCode.replace("```", "").trim();
                 WriteCommandAction.runWriteCommandAction(base.getProject(), () -> {
                     base.getCodeDocument().setText(trimmedCode);
                 });
                 InteractionLogger.log(new HashMap<>() {{
-                    if (id.equals("gam")) {
-                        put("event", "commit_gam");
+                    if (id.equals("procedural")) {
+                        put("event", "commit_procedural");
                         put("original_summary", base.getOriginalSummary());
-                        put("revised_summary", base.getTextPane().getText());
+                        put("revised_summary", base.getProceduralTextPane().getText());
                     } else {
-                        put("event", "commit_base");
-                        put("prompt", base.getTextPane().getText());
+                        put("event", "commit_declarative");
+                        put("prompt", base.getDeclarativeTextPane().getText());
                     }
                     put("file_path", base.getFilePath());
                     put("selected_code", base.getOriginalCode());

@@ -13,10 +13,10 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 
-public class CommitPromptAction extends BaseAction {
-    public CommitPromptAction(@Nullable @NlsActions.ActionText String text,
-                              @Nullable @NlsActions.ActionDescription String description,
-                              @Nullable Icon icon) {
+public class CommitDeclarativePromptAction extends BaseAction {
+    public CommitDeclarativePromptAction(@Nullable @NlsActions.ActionText String text,
+                                         @Nullable @NlsActions.ActionDescription String description,
+                                         @Nullable Icon icon) {
         super(text, description, icon);
     }
 
@@ -27,14 +27,14 @@ public class CommitPromptAction extends BaseAction {
         if (editor == null) return;
         String fileContext = editor.getDocument().getText();
         String selectedCode = editor.getSelectionModel().getSelectedText();
-        String prompt = getBase().getTextPane().getText();
+        String prompt = getBase().getDeclarativeTextPane().getText();
         TextRange selectedRange = new TextRange(editor.getSelectionModel().getSelectionStart(), editor.getSelectionModel().getSelectionEnd());
         getBase().setOriginalCode(selectedCode);
         getBase().setSelectedRange(selectedRange);
         getBase().setFilePath(editor.getVirtualFile().getPath());
-        ChatRequest chatRequest = OpenAIRequestTemplates.createBaseModificationRequest(selectedCode, fileContext, prompt);
+        ChatRequest chatRequest = OpenAIRequestTemplates.createDeclarativeModificationRequest(selectedCode, fileContext, prompt);
         try {
-            ChatCompletionWorker worker = new ChatCompletionWorker("base", chatRequest, getBase());
+            ChatCompletionWorker worker = new ChatCompletionWorker("declarative", chatRequest, getBase());
             worker.execute();
         } catch (Exception ex) {
             throw new RuntimeException(ex);
