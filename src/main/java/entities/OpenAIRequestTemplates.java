@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OpenAIRequestTemplates {
+
+    private static final String MODEL_NAME = "gpt-4o";
+
     public static ChatRequest createSummaryRequest(String selectedCode, String fileContext) {
         List<Message> messages = new ArrayList<>();
         messages.add(new Message("system", """
@@ -24,7 +27,7 @@ public class OpenAIRequestTemplates {
                                         
                 Please provide a concise summary of this snippet in one paragraph consisting of 2-3 sentences. Start the paragraph with a verb.
                 """.formatted(fileContext, selectedCode)));
-        return new ChatRequest("gpt-3.5-turbo", messages);
+        return new ChatRequest(MODEL_NAME, messages);
     }
 
     public static ChatRequest createProceduralModificationRequest(String selectedCode, String fileContext, String originalSummary, String modifiedSummary) {
@@ -56,7 +59,7 @@ public class OpenAIRequestTemplates {
                 Focus only on modifying the selected snippet—do not add any additional code.
                 Begin your response with ``` and conclude with ```.
                 """.formatted(fileContext, selectedCode, originalSummary, modifiedSummary)));
-        return new ChatRequest("gpt-3.5-turbo", messages);
+        return new ChatRequest(MODEL_NAME, messages);
     }
 
     public static ChatRequest createDeclarativeModificationRequest(String selectedCode, String fileContext, String prompt) {
@@ -82,7 +85,7 @@ public class OpenAIRequestTemplates {
                 Focus only on modifying the selected snippet—do not add any additional code.
                 Begin your response with ``` and conclude with ```.
                 """.formatted(fileContext, selectedCode, prompt)));
-        return new ChatRequest("gpt-3.5-turbo", messages);
+        return new ChatRequest(MODEL_NAME, messages);
     }
 
 }

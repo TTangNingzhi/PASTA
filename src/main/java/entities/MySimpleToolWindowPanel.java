@@ -3,6 +3,7 @@ package entities;
 import actions.*;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.application.ApplicationInfo;
 import com.intellij.openapi.command.WriteCommandAction;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.editor.EditorSettings;
@@ -10,6 +11,7 @@ import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.fileTypes.FileTypes;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.util.TextRange;
@@ -17,11 +19,13 @@ import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBPanelWithEmptyText;
+import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
 
 public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
     private static MySimpleToolWindowPanel instance;
@@ -131,12 +135,16 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
         // Setting up the procedural panel
         JBPanelWithEmptyText proceduralPanel = new JBPanelWithEmptyText(new BorderLayout());
         proceduralPanel.add(createJBLabelOfFont14("Procedural prompt"), BorderLayout.NORTH);
-        proceduralPanel.add(cardPanel, BorderLayout.CENTER);
+        JBScrollPane cardScrollPane = new JBScrollPane(cardPanel);
+        cardScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        proceduralPanel.add(cardScrollPane, BorderLayout.CENTER);
 
         // Setting up the declarative panel
         JBPanelWithEmptyText declarativePanel = new JBPanelWithEmptyText(new BorderLayout());
         declarativePanel.add(createJBLabelOfFont14("Declarative prompt"), BorderLayout.NORTH);
-        declarativePanel.add(declarativeTextPane, BorderLayout.CENTER);
+        JBScrollPane declarativeScrollPane = new JBScrollPane(declarativeTextPane);
+        declarativeScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        declarativePanel.add(declarativeScrollPane, BorderLayout.CENTER);
 
         // Add the procedural and declarative panels to the content panel
         contentPanel.add(proceduralPanel);
@@ -145,8 +153,24 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
 
     private void createCodeEditor() {
         // Credit: https://github.com/carlrobertoh/CodeGPT/blob/445b71184c7d5c4abd9b5228d8f9c0bd656102cc/src/main/kotlin/ee/carlrobert/codegpt/ui/textarea/CodePreviewTooltipContent.kt
+        String ideName = ApplicationInfo.getInstance().getVersionName();
+
+        // TODO: This is a temporary implementation. A better approach is needed to dynamically create new code editors based on file type. Implement this in the future.
+        FileType fileType;
+        System.out.println(ideName);
+        if (ideName.contains("PyCharm")) {
+            fileType = FileTypeManager.getInstance().getFileTypeByExtension("py");
+        } else if (ideName.contains("WebStorm")) {
+            fileType = FileTypeManager.getInstance().getFileTypeByExtension("js");
+        } else if (ideName.contains("IntelliJ IDEA")) {
+            fileType = FileTypeManager.getInstance().getFileTypeByExtension("java");
+        } else if (ideName.contains("CLion")) {
+            fileType = FileTypeManager.getInstance().getFileTypeByExtension("cpp");
+        } else {
+            fileType = FileTypes.PLAIN_TEXT;
+        }
+
         codeDocument = EditorFactory.getInstance().createDocument("");
-        FileType fileType = FileTypeManager.getInstance().getFileTypeByExtension("c");
         EditorFactory editorFactory = EditorFactory.getInstance();
         Editor codeEditor = editorFactory.createEditor(codeDocument, project, fileType, false);
         EditorSettings settings = codeEditor.getSettings();
