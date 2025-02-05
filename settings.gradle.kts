@@ -5,4 +5,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "LLM Modification"
+rootProject.name = "LLM-Modification"
