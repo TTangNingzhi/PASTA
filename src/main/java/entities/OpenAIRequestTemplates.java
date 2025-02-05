@@ -8,7 +8,7 @@ import java.util.List;
 
 public class OpenAIRequestTemplates {
 
-    private static final String MODEL_NAME = "gpt-4o";
+    private static final String MODEL_NAME = "gpt-4o-mini";
 
     public static ChatRequest createSummaryRequest(String selectedCode, String fileContext) {
         List<Message> messages = new ArrayList<>();

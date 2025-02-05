@@ -5,4 +5,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "GAM-Debugger"
+rootProject.name = "LLM Modification"
