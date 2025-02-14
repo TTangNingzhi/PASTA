@@ -71,8 +71,8 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
 
         RetrieveSummaryAction retrieveSummaryAction = new RetrieveSummaryAction("Retrieve Summary", "Retrieve summary", AllIcons.Actions.Find);
         DiffSummariesAction diffSummariesAction = new DiffSummariesAction("Diff Summaries", "Diff summaries", AllIcons.Actions.Diff);
-        CommitProceduralPromptAction commitProceduralPromptAction = new CommitProceduralPromptAction("Commit Procedural Prompt", "Commit procedural prompt", AllIcons.Actions.Edit);
-        CommitDeclarativePromptAction commitDeclarativePromptAction = new CommitDeclarativePromptAction("Commit Declarative Prompt", "Commit declarative prompt", AllIcons.Actions.Edit);
+        CommitProceduralPromptAction commitProceduralPromptAction = new CommitProceduralPromptAction("Commit Summary Scaffolding Prompt", "Commit procedural prompt", AllIcons.Actions.Edit);
+        CommitDeclarativePromptAction commitDeclarativePromptAction = new CommitDeclarativePromptAction("Commit Vanilla Prompt", "Commit declarative prompt", AllIcons.Actions.Edit);
         AcceptModifiedCodeAction acceptModifiedCodeAction = new AcceptModifiedCodeAction("Accept Modified Code", "Accept modified code", AllIcons.Actions.Checked);
 
         retrieveSummaryAction.setBase(this);
@@ -133,14 +133,14 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
 
         // Setting up the procedural panel
         JBPanelWithEmptyText proceduralPanel = new JBPanelWithEmptyText(new BorderLayout());
-        proceduralPanel.add(createJBLabelOfFont14("Procedural prompt"), BorderLayout.NORTH);
+        proceduralPanel.add(createJBLabelOfFont14("Summary Scaffolding Prompt"), BorderLayout.NORTH);
         JBScrollPane cardScrollPane = new JBScrollPane(cardPanel);
         cardScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         proceduralPanel.add(cardScrollPane, BorderLayout.CENTER);
 
         // Setting up the declarative panel
         JBPanelWithEmptyText declarativePanel = new JBPanelWithEmptyText(new BorderLayout());
-        declarativePanel.add(createJBLabelOfFont14("Declarative prompt"), BorderLayout.NORTH);
+        declarativePanel.add(createJBLabelOfFont14("Vanilla Prompt"), BorderLayout.NORTH);
         JBScrollPane declarativeScrollPane = new JBScrollPane(declarativeTextPane);
         declarativeScrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         declarativePanel.add(declarativeScrollPane, BorderLayout.CENTER);
@@ -178,7 +178,7 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
         settings.setLineMarkerAreaShown(false);
 
         JBPanelWithEmptyText codePanel = new JBPanelWithEmptyText(new BorderLayout());
-        codePanel.add(createJBLabelOfFont14("Modified code"), BorderLayout.NORTH);
+        codePanel.add(createJBLabelOfFont14("Modified Code"), BorderLayout.NORTH);
         codePanel.add(codeEditor.getComponent(), BorderLayout.CENTER);
         contentPanel.add(codePanel);
     }

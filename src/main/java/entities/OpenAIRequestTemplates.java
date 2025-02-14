@@ -9,11 +9,13 @@ import java.util.List;
 public class OpenAIRequestTemplates {
 
     private static final String MODEL_NAME = "gpt-4o-mini";
+    private static final String OS_NAME = System.getProperty("os.name");
 
     public static ChatRequest createSummaryRequest(String selectedCode, String fileContext) {
         List<Message> messages = new ArrayList<>();
         messages.add(new Message("system", """
-                You are a helpful assistant tasked with providing concise summaries for selected code snippets within a file.
+                You are a helpful assistant tasked with providing concise while descriptive summary for a selected code snippet within a file.
+                The summary should describe the functionality of the code in a step-by-step manner and be 2-3 sentences long, with each sentence on a separate line.
                 I will begin by presenting the entire file to establish context, followed by the specific code snippet for summarization.
                 """));
         messages.add(new Message("user", """
@@ -25,7 +27,7 @@ public class OpenAIRequestTemplates {
                                         
                 %s
                                         
-                Please provide a concise summary of this snippet in one paragraph consisting of 2-3 sentences. Start the paragraph with a verb.
+                Please provide a concise summary of this snippet in 2–3 descriptive sentences. Write each sentence on a separate line, beginning with a verb.
                 """.formatted(fileContext, selectedCode)));
         return new ChatRequest(MODEL_NAME, messages);
     }
@@ -33,10 +35,10 @@ public class OpenAIRequestTemplates {
     public static ChatRequest createProceduralModificationRequest(String selectedCode, String fileContext, String originalSummary, String modifiedSummary) {
         List<Message> messages = new ArrayList<>();
         messages.add(new Message("system", """
-                As a helpful assistant, your task is to revise the selected code snippet to reflect the changes specified in its modified summary.
+                As a helpful assistant, your task is to revise the selected code snippet to reflect the changes specified in its modified summary. The operating system of my environment is %s.
                 Initially, I will present the entire file to set the context. Then, I will provide both the specific code snippet and its original summary,
                 followed by the modified summary which indicates the desired changes.
-                """));
+                """.formatted(OS_NAME)));
 
         messages.add(new Message("user", """
                 Below is the context of the entire file:
@@ -65,9 +67,9 @@ public class OpenAIRequestTemplates {
     public static ChatRequest createDeclarativeModificationRequest(String selectedCode, String fileContext, String prompt) {
         List<Message> messages = new ArrayList<>();
         messages.add(new Message("system", """
-                You are a helpful assistant tasked with modifying the selected code snippet based on the provided prompt.
+                You are a helpful assistant tasked with modifying the selected code snippet based on the provided prompt. The operating system of my environment is %s.
                 Initially, I will present the entire file to establish context. Then, I will provide the specific code snippet along with the modification prompt.
-                """));
+                """.formatted(OS_NAME)));
         messages.add(new Message("user", """
                 Below is the context of the entire file:
                                                 
