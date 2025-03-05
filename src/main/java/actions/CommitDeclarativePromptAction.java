@@ -25,6 +25,7 @@ public class CommitDeclarativePromptAction extends BaseAction {
         assert e.getProject() != null;
         Editor editor = FileEditorManager.getInstance(e.getProject()).getSelectedTextEditor();
         if (editor == null) return;
+        getBase().setEditor(editor);
         String fileContext = editor.getDocument().getText();
         String selectedCode = editor.getSelectionModel().getSelectedText();
         String prompt = getBase().getDeclarativeTextPane().getText();

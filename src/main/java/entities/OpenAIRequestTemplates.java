@@ -8,14 +8,16 @@ import java.util.List;
 
 public class OpenAIRequestTemplates {
 
-    private static final String MODEL_NAME = "gpt-4o-mini";
+    private static final String MODEL_NAME = "gpt-4o";
     private static final String OS_NAME = System.getProperty("os.name");
 
     public static ChatRequest createSummaryRequest(String selectedCode, String fileContext) {
         List<Message> messages = new ArrayList<>();
         messages.add(new Message("system", """
-                You are a helpful assistant tasked with providing concise while descriptive summary for a selected code snippet within a file.
-                The summary should describe the functionality of the code in a step-by-step manner and be 2-3 sentences long, with each sentence on a separate line.
+                You are a helpful assistant tasked with providing a concise summary of a selected code snippet within a file.
+                - The summary should describe the functionality of the code in a step-by-step manner, following the execution order as closely as possible.
+                - Keep the summary brief (preferably 2-3 sentences, but 1 sentence is acceptable if sufficient).
+                - Each sentence should be on a separate line for readability, beginning with a verb.
                 I will begin by presenting the entire file to establish context, followed by the specific code snippet for summarization.
                 """));
         messages.add(new Message("user", """
@@ -27,7 +29,7 @@ public class OpenAIRequestTemplates {
                                         
                 %s
                                         
-                Please provide a concise summary of this snippet in 2–3 descriptive sentences. Write each sentence on a separate line, beginning with a verb.
+                Please provide a concise summary of the functionality of this snippet in at 1-3 sentences. Write each sentence on a separate line, beginning with a verb.
                 """.formatted(fileContext, selectedCode)));
         return new ChatRequest(MODEL_NAME, messages);
     }
@@ -53,13 +55,13 @@ public class OpenAIRequestTemplates {
                         
                 %s
                         
-                Modified summary (note the changes):
-                        
+                Modified summary (pay attention to the changes compared to the original):
+
                 %s
                                                 
                 Please revise the code snippet to reflect the changes outlined in the modified summary.
                 Focus only on modifying the selected snippet—do not add any additional code.
-                Begin your response with ``` and conclude with ```.
+                Begin your response with ``` and conclude with ``` in separate lines.
                 """.formatted(fileContext, selectedCode, originalSummary, modifiedSummary)));
         return new ChatRequest(MODEL_NAME, messages);
     }
@@ -85,7 +87,7 @@ public class OpenAIRequestTemplates {
                                                 
                 Please modify the code snippet based on the provided prompt.
                 Focus only on modifying the selected snippet—do not add any additional code.
-                Begin your response with ``` and conclude with ```.
+                Begin your response with ``` and conclude with ``` in separate lines.
                 """.formatted(fileContext, selectedCode, prompt)));
         return new ChatRequest(MODEL_NAME, messages);
     }

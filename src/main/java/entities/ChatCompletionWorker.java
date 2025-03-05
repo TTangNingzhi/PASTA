@@ -3,7 +3,11 @@ package entities;
 import chat.ChatCompletion;
 import chat.ChatRequest;
 import chat.OpenAIHttpPost;
-import com.intellij.openapi.command.WriteCommandAction;
+import com.intellij.diff.DiffContentFactory;
+import com.intellij.diff.DiffManager;
+import com.intellij.diff.contents.DiffContent;
+import com.intellij.diff.requests.SimpleDiffRequest;
+import com.intellij.openapi.application.ApplicationManager;
 import logger.InteractionLogger;
 
 import javax.swing.*;
@@ -56,10 +60,16 @@ public class ChatCompletionWorker extends SwingWorker<ChatCompletion, Void> {
             }
             case "procedural", "declarative" -> {
                 String modifiedCode = chatCompletion.choices.get(0).message.content;
-                String trimmedCode = modifiedCode.replace("```", "").trim();
-                WriteCommandAction.runWriteCommandAction(base.getProject(), () -> {
-                    base.getCodeDocument().setText(trimmedCode);
-                });
+                String trimmedCode = modifiedCode.replaceAll("(?m)^```.*$", "").trim();
+
+                DiffContent originalCodeContent = DiffContentFactory.getInstance().createFragment(base.getProject(), base.getEditor().getDocument(), base.getSelectedRange());
+                DiffContent modifiedCodeContent = DiffContentFactory.getInstance().createEditable(base.getProject(), trimmedCode, base.getEditor().getVirtualFile().getFileType());
+
+                SimpleDiffRequest diffRequest = new SimpleDiffRequest("Original Code Vs Modified Code",
+                        originalCodeContent, modifiedCodeContent, "Original code", "Modified code");
+                ApplicationManager.getApplication().invokeLater(() -> DiffManager.getInstance().showDiff(base.getProject(), diffRequest));
+                //base.refresh();
+
                 InteractionLogger.log(new HashMap<>() {{
                     if (id.equals("procedural")) {
                         put("event", "commit_procedural");

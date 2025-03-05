@@ -23,6 +23,7 @@ public class CommitProceduralPromptAction extends BaseAction {
         assert e.getProject() != null;
         Editor editor = FileEditorManager.getInstance(e.getProject()).getSelectedTextEditor();
         if (editor == null) return;
+        getBase().setEditor(editor);
         String fileContext = editor.getDocument().getText();
         String selectedCode = getBase().getOriginalCode();
         String originalSummary = getBase().getOriginalSummary();

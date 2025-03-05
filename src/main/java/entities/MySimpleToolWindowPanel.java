@@ -3,15 +3,7 @@ package entities;
 import actions.*;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.*;
-import com.intellij.openapi.application.ApplicationInfo;
-import com.intellij.openapi.command.WriteCommandAction;
-import com.intellij.openapi.editor.EditorFactory;
-import com.intellij.openapi.editor.EditorSettings;
-import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
-import com.intellij.openapi.fileTypes.FileTypeManager;
-import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.fileTypes.FileTypes;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.util.TextRange;
@@ -29,6 +21,7 @@ import java.awt.*;
 public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
     private static MySimpleToolWindowPanel instance;
     private final Project project;
+    private Editor editor;
     private DefaultActionGroup actionGroup;
     private ActionToolbar actionToolbar;
     private JBPanelWithEmptyText contentPanel;
@@ -39,7 +32,6 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
     private JTextPane diffTextPane;
     private String originalCode;
     private String originalSummary;
-    private Document codeDocument;
     private String filePath;
     private TextRange selectedRange;
 
@@ -57,11 +49,6 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
         return instance;
     }
 
-    public static MySimpleToolWindowPanel getInstance() {
-        assert instance != null;
-        return instance;
-    }
-
     private void initializeActionToolbar() {
         if (actionGroup == null) {
             actionGroup = new DefaultActionGroup();
@@ -73,21 +60,19 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
         DiffSummariesAction diffSummariesAction = new DiffSummariesAction("Diff Summaries", "Diff summaries", AllIcons.Actions.Diff);
         CommitProceduralPromptAction commitProceduralPromptAction = new CommitProceduralPromptAction("Commit Summary-Mediated Prompt", "Commit summary-mediated prompt", AllIcons.Actions.Edit);
         CommitDeclarativePromptAction commitDeclarativePromptAction = new CommitDeclarativePromptAction("Commit Direct Instruction Prompt", "Commit direct instruction prompt", AllIcons.Actions.Edit);
-        AcceptModifiedCodeAction acceptModifiedCodeAction = new AcceptModifiedCodeAction("Accept Modified Code", "Accept modified code", AllIcons.Actions.Checked);
 
         retrieveSummaryAction.setBase(this);
         diffSummariesAction.setBase(this);
         commitProceduralPromptAction.setBase(this);
         commitDeclarativePromptAction.setBase(this);
-        acceptModifiedCodeAction.setBase(this);
 
+        actionGroup.add(new MyToolbarLabelAction("Summary"));
         actionGroup.add(retrieveSummaryAction);
         actionGroup.add(diffSummariesAction);
         actionGroup.add(commitProceduralPromptAction);
         actionGroup.addSeparator();
+        actionGroup.add(new MyToolbarLabelAction("Direct"));
         actionGroup.add(commitDeclarativePromptAction);
-        actionGroup.addSeparator();
-        actionGroup.add(acceptModifiedCodeAction);
 
         if (actionToolbar == null) {
             actionToolbar = ActionManager.getInstance().createActionToolbar("llm-modification", actionGroup, true);
@@ -99,16 +84,29 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
     }
 
     private void initializeContent() {
-        contentPanel = new JBPanelWithEmptyText(new GridLayout(3, 1));
+        contentPanel = new JBPanelWithEmptyText(new BorderLayout());
         contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         Content content = ContentFactory.getInstance().createContent(contentPanel, "", false);
         setContent(content.getComponent());
-
+        createNotification();
         createInputArea();
-        createCodeEditor();
+    }
+
+    private void createNotification() {
+        JBPanelWithEmptyText notificationPanel = new JBPanelWithEmptyText(new BorderLayout());
+        JBLabel notificationLabel = new JBLabel("<html><i><u>Please use our tool as much as possible instead of manual editing.</u></i></html>");
+        notificationLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+//        notificationLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        notificationLabel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
+        notificationPanel.add(notificationLabel, BorderLayout.NORTH);
+        contentPanel.add(notificationPanel, BorderLayout.NORTH);
     }
 
     private void createInputArea() {
+        // Create a panel to hold the procedural and declarative text panes
+        JBPanelWithEmptyText inputPanel = new JBPanelWithEmptyText(new GridLayout(2, 1));
+        contentPanel.add(inputPanel, BorderLayout.CENTER);
+
         // Setting up the procedural text pane
         proceduralTextPane = new JTextPane();
         proceduralTextPane.setBackground(JBColor.WHITE);
@@ -146,41 +144,8 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
         declarativePanel.add(declarativeScrollPane, BorderLayout.CENTER);
 
         // Add the procedural and declarative panels to the content panel
-        contentPanel.add(proceduralPanel);
-        contentPanel.add(declarativePanel);
-    }
-
-    private void createCodeEditor() {
-        // Credit: https://github.com/carlrobertoh/CodeGPT/blob/445b71184c7d5c4abd9b5228d8f9c0bd656102cc/src/main/kotlin/ee/carlrobert/codegpt/ui/textarea/CodePreviewTooltipContent.kt
-        String ideName = ApplicationInfo.getInstance().getVersionName();
-
-        // TODO: This is a temporary implementation. A better approach is needed to dynamically create new code editors based on file type. Implement this in the future.
-        FileType fileType;
-        System.out.println(ideName);
-        if (ideName.contains("PyCharm")) {
-            fileType = FileTypeManager.getInstance().getFileTypeByExtension("py");
-        } else if (ideName.contains("WebStorm")) {
-            fileType = FileTypeManager.getInstance().getFileTypeByExtension("js");
-        } else if (ideName.contains("IntelliJ IDEA")) {
-            fileType = FileTypeManager.getInstance().getFileTypeByExtension("java");
-        } else if (ideName.contains("CLion")) {
-            fileType = FileTypeManager.getInstance().getFileTypeByExtension("cpp");
-        } else {
-            fileType = FileTypes.PLAIN_TEXT;
-        }
-
-        codeDocument = EditorFactory.getInstance().createDocument("");
-        EditorFactory editorFactory = EditorFactory.getInstance();
-        Editor codeEditor = editorFactory.createEditor(codeDocument, project, fileType, false);
-        EditorSettings settings = codeEditor.getSettings();
-        settings.setLineNumbersShown(false);
-        settings.setFoldingOutlineShown(false);
-        settings.setLineMarkerAreaShown(false);
-
-        JBPanelWithEmptyText codePanel = new JBPanelWithEmptyText(new BorderLayout());
-        codePanel.add(createJBLabelOfFont14("Modified Code"), BorderLayout.NORTH);
-        codePanel.add(codeEditor.getComponent(), BorderLayout.CENTER);
-        contentPanel.add(codePanel);
+        inputPanel.add(proceduralPanel);
+        inputPanel.add(declarativePanel);
     }
 
     private JBLabel createJBLabelOfFont14(String text) {
@@ -197,7 +162,6 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
         if (getDiffTextPane().isVisible()) {
             getCardLayout().next(getCardPanel());
         }
-        WriteCommandAction.runWriteCommandAction(project, () -> codeDocument.setText(""));
     }
 
     public void setOriginalCode(String originalCode) {
@@ -236,12 +200,16 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
         return originalSummary;
     }
 
-    public Document getCodeDocument() {
-        return codeDocument;
-    }
-
     public Project getProject() {
         return project;
+    }
+
+    public void setEditor(Editor editor) {
+        this.editor = editor;
+    }
+
+    public Editor getEditor() {
+        return editor;
     }
 
     public void setSelectedRange(TextRange selectedRange) {

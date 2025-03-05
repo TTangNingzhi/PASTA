@@ -37,6 +37,7 @@ public class InteractionLogger {
     }
 
     public static void log(Map<String, String> data) {
+        assert data != null;
         if (!data.containsKey("timestamp")) {
             String formattedDate = dateFormat.format(new Date()); // Get current time in human-readable form
             data.put("timestamp", formattedDate);
