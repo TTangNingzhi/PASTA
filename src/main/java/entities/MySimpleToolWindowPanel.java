@@ -20,6 +20,7 @@ import java.awt.*;
 
 public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
     private static MySimpleToolWindowPanel instance;
+    private final ToggleableLoadingAction loadingAction = new ToggleableLoadingAction();
     private final Project project;
     private Editor editor;
     private DefaultActionGroup actionGroup;
@@ -66,6 +67,8 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
         commitProceduralPromptAction.setBase(this);
         commitDeclarativePromptAction.setBase(this);
 
+        actionGroup.add(loadingAction);
+        actionGroup.addSeparator();
         actionGroup.add(new MyToolbarLabelAction("Summary"));
         actionGroup.add(retrieveSummaryAction);
         actionGroup.add(diffSummariesAction);
@@ -164,6 +167,10 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
         }
     }
 
+    public void refreshActions() {
+        actionToolbar.updateActionsAsync();
+    }
+
     public void setOriginalCode(String originalCode) {
         this.originalCode = originalCode;
     }
@@ -226,6 +233,10 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
 
     public void setFilePath(String filePath) {
         this.filePath = filePath;
+    }
+
+    public ToggleableLoadingAction getLoadingAction() {
+        return loadingAction;
     }
 
 }

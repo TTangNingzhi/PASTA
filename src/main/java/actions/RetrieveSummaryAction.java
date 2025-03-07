@@ -41,6 +41,7 @@ public class RetrieveSummaryAction extends BaseAction {
         getBase().setFilePath(editor.getVirtualFile().getPath());
 
         ChatRequest chatRequest = OpenAIRequestTemplates.createSummaryRequest(selectedCode, fileContext);
+        getBase().getLoadingAction().setLoading(true);
         try {
             ChatCompletionWorker worker = new ChatCompletionWorker("summarize", chatRequest, getBase());
             worker.execute();

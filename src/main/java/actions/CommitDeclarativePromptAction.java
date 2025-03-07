@@ -34,6 +34,7 @@ public class CommitDeclarativePromptAction extends BaseAction {
         getBase().setSelectedRange(selectedRange);
         getBase().setFilePath(editor.getVirtualFile().getPath());
         ChatRequest chatRequest = OpenAIRequestTemplates.createDeclarativeModificationRequest(selectedCode, fileContext, prompt);
+        getBase().getLoadingAction().setLoading(true);
         try {
             ChatCompletionWorker worker = new ChatCompletionWorker("declarative", chatRequest, getBase());
             worker.execute();

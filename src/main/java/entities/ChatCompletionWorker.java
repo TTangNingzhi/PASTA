@@ -7,6 +7,7 @@ import com.intellij.diff.DiffContentFactory;
 import com.intellij.diff.DiffManager;
 import com.intellij.diff.contents.DiffContent;
 import com.intellij.diff.requests.SimpleDiffRequest;
+import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.application.ApplicationManager;
 import logger.InteractionLogger;
 
@@ -68,7 +69,7 @@ public class ChatCompletionWorker extends SwingWorker<ChatCompletion, Void> {
                 SimpleDiffRequest diffRequest = new SimpleDiffRequest("Original Code Vs Modified Code",
                         originalCodeContent, modifiedCodeContent, "Original code", "Modified code");
                 ApplicationManager.getApplication().invokeLater(() -> DiffManager.getInstance().showDiff(base.getProject(), diffRequest));
-                //base.refresh();
+                base.refresh();
 
                 InteractionLogger.log(new HashMap<>() {{
                     if (id.equals("procedural")) {
@@ -86,6 +87,8 @@ public class ChatCompletionWorker extends SwingWorker<ChatCompletion, Void> {
             }
             default -> throw new RuntimeException("Invalid id for ChatCompletionWorker: " + id);
         }
+        base.getLoadingAction().setLoading(false);
+        base.refreshActions();
     }
 
     public static void printInfo(ChatRequest chatRequest, ChatCompletion chatCompletion, long duration) {

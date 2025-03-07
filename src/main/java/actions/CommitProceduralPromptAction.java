@@ -30,6 +30,7 @@ public class CommitProceduralPromptAction extends BaseAction {
         String modifiedSummary = getBase().getProceduralTextPane().getText();
         getBase().setFilePath(editor.getVirtualFile().getPath());
         ChatRequest chatRequest = OpenAIRequestTemplates.createProceduralModificationRequest(selectedCode, fileContext, originalSummary, modifiedSummary);
+        getBase().getLoadingAction().setLoading(true);
         try {
             ChatCompletionWorker worker = new ChatCompletionWorker("procedural", chatRequest, getBase());
             worker.execute();
