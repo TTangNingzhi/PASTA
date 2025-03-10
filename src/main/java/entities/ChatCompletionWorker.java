@@ -69,7 +69,6 @@ public class ChatCompletionWorker extends SwingWorker<ChatCompletion, Void> {
                 SimpleDiffRequest diffRequest = new SimpleDiffRequest("Original Code Vs Modified Code",
                         originalCodeContent, modifiedCodeContent, "Original code", "Modified code");
                 ApplicationManager.getApplication().invokeLater(() -> DiffManager.getInstance().showDiff(base.getProject(), diffRequest));
-                base.refresh();
 
                 InteractionLogger.log(new HashMap<>() {{
                     if (id.equals("procedural")) {

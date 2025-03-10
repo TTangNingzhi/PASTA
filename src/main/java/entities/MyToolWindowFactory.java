@@ -8,7 +8,7 @@ import org.jetbrains.annotations.NotNull;
 public class MyToolWindowFactory implements ToolWindowFactory {
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-        MySimpleToolWindowPanel panel = MySimpleToolWindowPanel.getInstance(true, project);
+        MySimpleToolWindowPanel panel = new MySimpleToolWindowPanel(true, project);
         toolWindow.getComponent().add(panel);
     }
 }

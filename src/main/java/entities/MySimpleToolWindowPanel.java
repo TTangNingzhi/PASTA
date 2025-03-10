@@ -17,6 +17,7 @@ import com.intellij.ui.content.ContentFactory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.lang.reflect.Method;
 
 public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
     private static MySimpleToolWindowPanel instance;
@@ -36,18 +37,11 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
     private String filePath;
     private TextRange selectedRange;
 
-    private MySimpleToolWindowPanel(boolean vertical, Project project) {
+    MySimpleToolWindowPanel(boolean vertical, Project project) {
         super(vertical);
         this.project = project;
         initializeActionToolbar();
         initializeContent();
-    }
-
-    public static MySimpleToolWindowPanel getInstance(boolean vertical, Project project) {
-        if (instance == null) {
-            instance = new MySimpleToolWindowPanel(vertical, project);
-        }
-        return instance;
     }
 
     private void initializeActionToolbar() {
@@ -168,7 +162,14 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
     }
 
     public void refreshActions() {
-        actionToolbar.updateActionsAsync();
+        try {
+            Method method = ActionToolbar.class.getMethod("updateActionsAsync");
+            method.invoke(actionToolbar);
+        } catch (NoSuchMethodException e) {
+            actionToolbar.updateActionsImmediately(); // Fallback for older versions
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void setOriginalCode(String originalCode) {
