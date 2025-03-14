@@ -19,10 +19,11 @@ dependencies {
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-    version.set("2024.3.2")
-    type.set("CL") // Target IDE Platform
-
-    plugins.set(listOf(/* Plugin Dependencies */))
+    localPath.set("D:/Program Files/JetBrains/PyCharm 2024.3.4")
+//    version.set("2024.3.2")
+//    type.set("CL") // Target IDE Platform
+//
+//    plugins.set(listOf(/* Plugin Dependencies */))
 }
 
 tasks {
