@@ -19,7 +19,13 @@ dependencies {
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-    localPath.set("D:/Program Files/JetBrains/PyCharm 2024.3.4")
+    localPath.set(
+        if (System.getProperty("os.name").lowercase().contains("windows")) {
+            "D:/Program Files/JetBrains/PyCharm 2024.3.4"
+        } else {
+            "/Applications/PyCharm.app/Contents"
+        }
+    )
 //    version.set("2024.3.2")
 //    type.set("CL") // Target IDE Platform
 //

@@ -83,8 +83,7 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
     private void initializeContent() {
         contentPanel = new JBPanelWithEmptyText(new BorderLayout());
         contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        Content content = ContentFactory.getInstance().createContent(contentPanel, "", false);
-        setContent(content.getComponent());
+        add(contentPanel);
         createNotification();
         createInputArea();
     }
@@ -155,6 +154,7 @@ public class MySimpleToolWindowPanel extends SimpleToolWindowPanel {
     public void refresh() {
         setOriginalSummary("");
         getProceduralTextPane().setText("");
+        getDeclarativeTextPane().setText("");
         getDiffTextPane().setText("");
         if (getDiffTextPane().isVisible()) {
             getCardLayout().next(getCardPanel());

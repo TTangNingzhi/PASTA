@@ -22,13 +22,13 @@ public class OpenAIRequestTemplates {
                 """));
         messages.add(new Message("user", """
                 Below is the context of the file:
-                                        
+                
                 %s
-                                        
+                
                 Below is the selected code snippet:
-                                        
+                
                 %s
-                                        
+                
                 Please provide a concise summary of the functionality of this snippet in at 1-3 sentences. Write each sentence on a separate line, beginning with a verb.
                 """.formatted(fileContext, selectedCode)));
         return new ChatRequest(MODEL_NAME, messages);
@@ -44,21 +44,21 @@ public class OpenAIRequestTemplates {
 
         messages.add(new Message("user", """
                 Below is the context of the entire file:
-                                                
+                
                 %s
-                                                
+                
                 Below is the selected code snippet:
-                                                
+                
                 %s
-                        
+                
                 Original summary of this snippet:
-                        
+                
                 %s
-                        
+                
                 Modified summary (pay attention to the changes compared to the original):
-
+                
                 %s
-                                                
+                
                 Please revise the code snippet to reflect the changes outlined in the modified summary.
                 Focus only on modifying the selected snippet—do not add any additional code.
                 Begin your response with ``` and conclude with ``` in separate lines.
@@ -74,17 +74,17 @@ public class OpenAIRequestTemplates {
                 """.formatted(OS_NAME)));
         messages.add(new Message("user", """
                 Below is the context of the entire file:
-                                                
+                
                 %s
-                                                
+                
                 Below is the selected code snippet:
-                                                
+                
                 %s
-                                                
+                
                 Prompt for modification:
-                                                
+                
                 %s
-                                                
+                
                 Please modify the code snippet based on the provided prompt.
                 Focus only on modifying the selected snippet—do not add any additional code.
                 Begin your response with ``` and conclude with ``` in separate lines.

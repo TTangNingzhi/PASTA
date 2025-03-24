@@ -83,6 +83,7 @@ public class ChatCompletionWorker extends SwingWorker<ChatCompletion, Void> {
                     put("selected_code", base.getOriginalCode());
                     put("modified_code", trimmedCode);
                 }});
+                base.refresh();
             }
             default -> throw new RuntimeException("Invalid id for ChatCompletionWorker: " + id);
         }
