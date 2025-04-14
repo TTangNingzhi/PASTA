@@ -54,17 +54,17 @@ public class DiffSummariesAction extends BaseAction {
                             font-family: 'Monospaced', monospace;
                             font-size: 14pt;
                         }
-                        
+                
                         .inserted {
-                            color: red;
-                            font-weight: bold;
-                        }
-                        
-                        .deleted {
                             color: green;
                             font-weight: bold;
+                        }
+                
+                        .deleted {
+                            color: red;
+                            font-weight: bold;
                             text-decoration: line-through;
-                            text-decoration-color: green;
+                            text-decoration-color: red;
                             text-decoration-style: solid;
                             text-decoration-thickness: 2px;
                         }
