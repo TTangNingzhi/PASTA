@@ -1,45 +1,26 @@
-# PASTA: A JetBrains Plugin for Prompting-Based Code Modification
+# PASTA: Prompting-Based Code Modification Plugin for JetBrains IDEs
 
 _Ningzhi Tang @ SaNDwich Lab, University of Notre Dame_
 
-PASTA is a research prototype plugin for JetBrains IDEs (e.g., PyCharm, WebStorm) that enables developers to interact with large language models (LLMs) to modify code through two prompting techniques:
-- 📝 **Summary-Mediated Prompting**
-- 💬 **Direct Instruction Prompting**
-
-This plugin was developed to support an empirical study on how developers perceive and use prompting to guide LLMs in code modification tasks.
+PASTA (**P**rompt-**A**ssisted **S**oftware **T**r**A**nsformation) is a research prototype plugin for JetBrains IDEs (e.g., PyCharm, WebStorm) designed to investigate how developers use different prompting techniques for real-world code modification tasks. PASTA supports both summary-mediated and direct instruction prompting, providing a controlled environment for empirical studies of LLM-assisted code editing.
 
 <p align="center">
-    <img src="static/screenshot.png" max-width="100%" alt="System Overview">
+    <img src="static/screenshot-annotated.png" max-width="100%" alt="PASTA Interface Overview">
 </p>
 
-## ✨ Features
+## Features & Workflow
 
-### Summary-Mediated Prompting
-- Generate editable summaries for selected code snippets
-- Edit the summaries to specify intended changes
-- View before/after summary differences
-- Commit modified summaries to trigger LLM-based code transformation
+- **Selection-Based Prompting**: Select code in the editor to specify the target for modification.
+- **Summary-Mediated Prompting**: Generate a concise, editable summary (1–3 sentences) of the selected code. Edit the summary to express the intended change, and view before/after summary differences to aid revision.
+- **Direct Instruction Prompting**: Alternatively, write a free-form natural language command describing the desired modification.
+- **Commit & Review**: Submit your prompt (summary or instruction) to the LLM. The plugin displays the resulting code changes in a diff view with line- and token-level highlights for inspection and selective acceptance.
+- **Context Inclusion**: The full content of the current file is always included as context in LLM requests.
 
-### Direct Instruction Prompting
-- Write free-form prompts directly to modify selected code
-- Ideal for developers who prefer direct and concise commands
+## Implementation
 
-### Diff-Based Results
-- All LLM-generated modifications are shown in a side-by-side diff view
-- Allows comparison, validation, and selective acceptance of changes
-
-## 🛠️ Implementation
-
-PASTA is built using:
-- JetBrains [IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html)
-- [Java Diff Utils](https://java-diff-utils.github.io/java-diff-utils/) for natural language summary comparison
-- Built-in JetBrains diff package for code changes
-- [OpenAI GPT-4o](https://openai.com/index/hello-gpt-4o/) for LLM-based summarization and code modification
-
-## 📐 Design Decisions
-
-- **Selection-Based Prompting**: Easy and natural interaction within the IDE; aligns with existing tools like Cursor and Copilot Chat.
-- **Context-Aware Requests**: Includes current file as context to enhance model quality; simple but effective baseline adopted from prior work.
+- Built with the [IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html), compatible with all JetBrains IDEs.
+- Uses [Java Diff Utils](https://java-diff-utils.github.io/java-diff-utils/) for summary comparison and the JetBrains SDK's diff package for code changes.
+- LLM integration via [OpenAI GPT-4o](https://openai.com/index/hello-gpt-4o/) chat completions API, with few-shot examples for consistency.
 
 ## ✉️ Contact
 
