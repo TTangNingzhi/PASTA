@@ -18,6 +18,40 @@ public class OpenAIRequestTemplates {
                 - The summary should describe the functionality of the code in a step-by-step manner, following the execution order as closely as possible.
                 - Keep the summary brief (preferably 2-3 sentences, but 1 sentence is acceptable if sufficient).
                 - Each sentence should be on a separate line for readability, beginning with a verb.
+                
+                Here are some examples of good summaries:
+                
+                Example 1:
+                Code:
+                ```java
+                public void processData(List<String> data) {
+                    for (String item : data) {
+                        if (item.startsWith("A")) {
+                            System.out.println(item);
+                        }
+                    }
+                }
+                ```
+                Summary:
+                Processes a list of strings by iterating through each item.
+                Prints items that start with the letter 'A'.
+                
+                Example 2:
+                Code:
+                ```java
+                public int calculateSum(int[] numbers) {
+                    int sum = 0;
+                    for (int num : numbers) {
+                        sum += num;
+                    }
+                    return sum;
+                }
+                ```
+                Summary:
+                Initializes a sum variable to zero.
+                Iterates through the array of numbers.
+                Returns the total sum of all numbers.
+                
                 I will begin by presenting the entire file to establish context, followed by the specific code snippet for summarization.
                 """));
         messages.add(new Message("user", """
@@ -38,6 +72,71 @@ public class OpenAIRequestTemplates {
         List<Message> messages = new ArrayList<>();
         messages.add(new Message("system", """
                 As a helpful assistant, your task is to revise the selected code snippet to reflect the changes specified in its modified summary. The operating system of my environment is %s.
+                
+                Here are some examples of good modifications:
+                
+                Example 1:
+                Original Code:
+                ```java
+                public void processData(List<String> data) {
+                    for (String item : data) {
+                        if (item.startsWith("A")) {
+                            System.out.println(item);
+                        }
+                    }
+                }
+                ```
+                Original Summary:
+                Processes a list of strings by iterating through each item.
+                Prints items that start with the letter 'A'.
+                
+                Modified Summary:
+                Processes a list of strings by iterating through each item.
+                Prints items that start with the letter 'B'.
+                
+                Modified Code:
+                ```java
+                public void processData(List<String> data) {
+                    for (String item : data) {
+                        if (item.startsWith("B")) {
+                            System.out.println(item);
+                        }
+                    }
+                }
+                ```
+                
+                Example 2:
+                Original Code:
+                ```java
+                public int calculateSum(int[] numbers) {
+                    int sum = 0;
+                    for (int num : numbers) {
+                        sum += num;
+                    }
+                    return sum;
+                }
+                ```
+                Original Summary:
+                Initializes a sum variable to zero.
+                Iterates through the array of numbers.
+                Returns the total sum of all numbers.
+                
+                Modified Summary:
+                Initializes a sum variable to zero.
+                Iterates through the array of numbers.
+                Returns the average of all numbers.
+                
+                Modified Code:
+                ```java
+                public double calculateAverage(int[] numbers) {
+                    int sum = 0;
+                    for (int num : numbers) {
+                        sum += num;
+                    }
+                    return (double) sum / numbers.length;
+                }
+                ```
+                
                 Initially, I will present the entire file to set the context. Then, I will provide both the specific code snippet and its original summary,
                 followed by the modified summary which indicates the desired changes.
                 """.formatted(OS_NAME)));
@@ -70,6 +169,57 @@ public class OpenAIRequestTemplates {
         List<Message> messages = new ArrayList<>();
         messages.add(new Message("system", """
                 You are a helpful assistant tasked with modifying the selected code snippet based on the provided prompt. The operating system of my environment is %s.
+                
+                Here are some examples of good modifications:
+                
+                Example 1:
+                Original Code:
+                ```java
+                public void processData(List<String> data) {
+                    for (String item : data) {
+                        if (item.startsWith("A")) {
+                            System.out.println(item);
+                        }
+                    }
+                }
+                ```
+                Prompt: "Modify the code to print items that start with 'B' instead of 'A'"
+                
+                Modified Code:
+                ```java
+                public void processData(List<String> data) {
+                    for (String item : data) {
+                        if (item.startsWith("B")) {
+                            System.out.println(item);
+                        }
+                    }
+                }
+                ```
+                
+                Example 2:
+                Original Code:
+                ```java
+                public int calculateSum(int[] numbers) {
+                    int sum = 0;
+                    for (int num : numbers) {
+                        sum += num;
+                    }
+                    return sum;
+                }
+                ```
+                Prompt: "Change the method to calculate the average instead of sum"
+                
+                Modified Code:
+                ```java
+                public double calculateAverage(int[] numbers) {
+                    int sum = 0;
+                    for (int num : numbers) {
+                        sum += num;
+                    }
+                    return (double) sum / numbers.length;
+                }
+                ```
+                
                 Initially, I will present the entire file to establish context. Then, I will provide the specific code snippet along with the modification prompt.
                 """.formatted(OS_NAME)));
         messages.add(new Message("user", """
@@ -91,5 +241,4 @@ public class OpenAIRequestTemplates {
                 """.formatted(fileContext, selectedCode, prompt)));
         return new ChatRequest(MODEL_NAME, messages);
     }
-
 }
