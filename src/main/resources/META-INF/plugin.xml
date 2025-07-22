@@ -22,7 +22,10 @@
     <b>💬 Direct Instruction Prompting:</b><br>
     Write free-form prompts directly to modify selected code. Changes are submitted along with code context and displayed as a side-by-side diff.<br><br>
 
-    Powered by GPT-4o. Designed for research on prompting strategies in AI-assisted coding.
+    Powered by GPT-4o. Designed for research on prompting strategies in AI-assisted coding.<br><br>
+    
+    <b>🌐 Open Source:</b><br>
+    This project is open source and available at <a href="https://github.com/TTangNingzhi/PASTA">GitHub</a>.
   ]]></description>
 
     <!-- Product and plugin compatibility requirements.
