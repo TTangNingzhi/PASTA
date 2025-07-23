@@ -1,4 +1,4 @@
-# PASTA: Prompting-Based Code Modification Plugin for JetBrains IDEs
+# PASTA: Direct Instruction and Summary-Mediated Prompting
 
 _Ningzhi Tang @ SaNDwich Lab, University of Notre Dame_
 
