@@ -1,4 +1,4 @@
-# PASTA: Direct Instruction and Summary-Mediated Prompting
+# PASTA: Direct Instruction and Summary-Mediated Prompting in LLM-Assisted Code Modification
 
 _Ningzhi Tang @ SaNDwich Lab, University of Notre Dame_
 
