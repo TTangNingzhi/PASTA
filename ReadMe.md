@@ -27,6 +27,8 @@ PASTA (**P**rompt-**A**ssisted **S**oftware **T**r**A**nsformation) is a researc
 For detailed running instructions, refer to the [IntelliJ Platform Plugin SDK](https://plugins.jetbrains.com/docs/intellij/welcome.html). 
 Some environment setup and adjustments should be referred to or adjusted in `build.gradle.kts`.
 
+Please note that you should set up your own OpenAI API key in your local OS environment.
+
 ### Running in Development
 1. Clone this repository and open the project in IntelliJ IDEA
 2. Run the plugin by clicking `Run > Run 'Run Plugin'` button

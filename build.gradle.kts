@@ -4,8 +4,8 @@ plugins {
     id("org.jetbrains.intellij") version "1.13.3"
 }
 
-group = "com.example"
-version = "1.0-SNAPSHOT"
+group = "com.nztang"
+version = "1.0"
 
 repositories {
     mavenCentral()
@@ -19,16 +19,15 @@ dependencies {
 // Configure Gradle IntelliJ Plugin
 // Read more: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin.html
 intellij {
-    localPath.set(
-        if (System.getProperty("os.name").lowercase().contains("windows")) {
-            "D:/Program Files/JetBrains/PyCharm 2024.3.4"
-        } else {
-            "/Applications/PyCharm.app/Contents"
-        }
-    )
-//    version.set("2024.3.2")
-//    type.set("CL") // Target IDE Platform
-//
+//    localPath.set( // Example paths for local development
+//        if (System.getProperty("os.name").lowercase().contains("windows")) {
+//            "D:/Program Files/JetBrains/PyCharm 2024.3.4"
+//        } else {
+//            "/Applications/PyCharm.app/Contents"
+//        }
+//    )
+    version.set("2024.3.4")
+    type.set("IC") // use IntelliJ Community base, it supports all IDEs
 //    plugins.set(listOf(/* Plugin Dependencies */))
 }
 
@@ -43,8 +42,8 @@ tasks {
     }
 
     patchPluginXml {
-        sinceBuild.set("222")
-        untilBuild.set("243.*")
+        sinceBuild.set("242")
+        untilBuild.set("252.*")
     }
 
     signPlugin {

@@ -1,11 +1,11 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
     <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
-    <id>com.example.PASTA</id>
+    <id>com.nztang.pasta</id>
 
     <!-- Public plugin name should be written in Title Case.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
-    <name>PASTA</name>
+    <name>PASTA AI</name>
 
     <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
     <vendor email="ningzhitang2001@gmail.com" url="https://www.nztang.com/">SaNDwich Lab</vendor>
@@ -21,6 +21,9 @@
 
     <b>💬 Direct Instruction Prompting:</b><br>
     Write free-form prompts directly to modify selected code. Changes are submitted along with code context and displayed as a side-by-side diff.<br><br>
+
+    <b>⚠️ Requires Local OpenAI API:</b><br>
+    This plugin does not provide LLM inference. You must set up your own OpenAI API key in your local OS environment.<br><br>
 
     Powered by GPT-4o. Designed for research on prompting strategies in AI-assisted coding.<br><br>
     
