@@ -4,6 +4,8 @@ _Ningzhi Tang @ SaNDwich Lab, University of Notre Dame_
 
 PASTA (**P**rompt-**A**ssisted **S**oftware **T**r**A**nsformation) is a research prototype plugin for JetBrains IDEs (e.g., PyCharm, WebStorm) designed to investigate how developers use different prompting techniques for real-world code modification tasks. PASTA supports both summary-mediated and direct instruction prompting, providing an environment for empirical studies of LLM-assisted code editing.
 
+PASTA is available on JetBrains Marketplace and is compatible with the entire family of JetBrains IDEs from 2024.2 to 2025.2. You can download it from: https://plugins.jetbrains.com/plugin/28121-pasta-ai or search for "PASTA AI" in the JetBrains Marketplace.
+
 <p align="center">
     <img src="static/screenshot-annotated.png" max-width="100%" alt="PASTA Interface Overview">
 </p>
