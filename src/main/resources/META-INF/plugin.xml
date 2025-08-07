@@ -14,21 +14,18 @@
          Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
          Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-    PASTA is a JetBrains plugin for LLM-guided code modification within the IDE.<br><br>
+PASTA is a JetBrains plugin for LLM-guided code modification within the IDE.
+Powered by GPT-4o, it is designed for research on prompting strategies in AI-assisted coding.
+This project is open source and available on <a href="https://github.com/TTangNingzhi/PASTA">GitHub</a>.<br>
 
-    <b>📝 Summary-Mediated Prompting:</b><br>
-    Generate a natural language summary of selected code, edit the summary to describe desired changes, and submit to the LLM. Includes visual diff of summary edits.<br><br>
+The plugin supports two prompting workflows:
+<ul>
+  <li><b>Summary-Mediated Prompting:</b> Generate a natural language summary of selected code, edit the summary to describe desired changes, and submit it to the LLM. Includes a visual diff of summary edits.</li>
+  <li><b>Direct Instruction Prompting:</b> Write free-form prompts directly to modify selected code. Changes are submitted along with code context and displayed as a side-by-side diff.</li>
+</ul>
 
-    <b>💬 Direct Instruction Prompting:</b><br>
-    Write free-form prompts directly to modify selected code. Changes are submitted along with code context and displayed as a side-by-side diff.<br><br>
-
-    <b>⚠️ Requires Local OpenAI API:</b><br>
-    This plugin does not provide LLM inference. You must set up your own OpenAI API key in your local OS environment.<br><br>
-
-    Powered by GPT-4o. Designed for research on prompting strategies in AI-assisted coding.<br><br>
-    
-    <b>🌐 Open Source:</b><br>
-    This project is open source and available at <a href="https://github.com/TTangNingzhi/PASTA">GitHub</a>.
+<b>⚠️ Requires Local OS Environment OpenAI API:</b>
+This plugin does not provide LLM inference. You must set up your own OpenAI API key as a local environment variable.
   ]]></description>
 
     <!-- Product and plugin compatibility requirements.
